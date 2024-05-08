@@ -1,9 +1,12 @@
 
 class Account:
 #a
-    def __init__(self, name, balance=0):
-        self.__account_name=name
+    def __init__(self, fname:str, lname:str,pin:int,history:list,balance=0):
+        self.__account_fname=fname
+        self.__account_lname=lname
         self.__account_balance=balance
+        self.__account_history=history
+        self.__account_pin=pin
 
 #b
     def deposit(self,amount):
@@ -24,7 +27,8 @@ class Account:
         return self.__account_balance
 #e
     def get_name(self):
-        return self.__account_name
+        return self.__account_fname,self.__account_lname
+
 #f
     def set_balance(self,value):
         if value>=0:
@@ -32,11 +36,12 @@ class Account:
         else:
             self.__account_balance=0
 #g
-    def set_name(self,value):
-        self.__account_name=value
+    def set_name(self,value:tuple)->None:
+        self.__account_name,self.__account_lname=value
 #h
     def __str__(self):
-        return f"Account name {self.get_name()}, Account balance = {self.get_balance():.2f}"
+        return (f"Account name {self.get_name()[0]} {self.get_name()[1]}, Account balance = {self.get_balance():.2f}, "
+                f"Number of Transactions: {len(self.__account_history)}")
 #2
 class SavingAccount(Account):
 # a+b
