@@ -4,6 +4,23 @@ from accounts import *
 import csv
 
 class Logic(QMainWindow, Ui_MainWindow):
+        def database_update(self)->None:
+            '''
+            updates database
+            :return:
+            '''
+            with open('database','r+',newline='') as file:
+                writer=csv.writer(file)
+                database = csv.reader(file)
+                for account in database:
+                    names=self.__current_account.get_name()
+                    if account[0]==names[0] and account[1]==names[1]:
+                        writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),self.__current_account.get_history()])
+                    else:
+                        writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),self.__current_account.get_history()])
+
+
+
         def check_accounts(self)->bool:
             '''
             returns True if account entered is in the database
@@ -55,7 +72,7 @@ class Logic(QMainWindow, Ui_MainWindow):
             :return:
             '''
             self.__current_account=Account(fname=self.FNEntry.text(),lname=self.LNEntry.text(),pin=self.PINEntry.text(),history=[],balance=int(self.wdEntry.text()))
-            print('here')
+            self.database_update()
         def __init__(self)->None:
             '''
 

@@ -29,6 +29,10 @@ class Account:
     def get_name(self):
         return (self.__account_fname,self.__account_lname)
 
+    def get_pin(self):
+        return self.__account_pin
+    def get_history(self):
+        return self.__account_history
 #f
     def set_balance(self,value):
         if value>=0:
