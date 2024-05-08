@@ -24,7 +24,7 @@ class Account:
             return False
 #d
     def get_balance(self):
-        return self.__account_balance
+        return float(self.__account_balance)
 #e
     def get_name(self):
         return self.__account_fname,self.__account_lname
@@ -85,7 +85,6 @@ class SavingAccount(Account):
 
 
 if __name__=="__main__":
-    jane=SavingAccount('Jane')
-    jane.set_balance(120)
-    print(jane.get_balance())
+    jane=Account('Jane','B',0000,[2,3,4],100)
+    print(jane)
 
