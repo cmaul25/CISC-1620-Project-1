@@ -56,7 +56,7 @@ class Ui_MainWindow(object):
         self.FNEntry.setGeometry(QtCore.QRect(10, 10, 113, 20))
         self.FNEntry.setObjectName("FNEntry")
         self.LoginLabel = QtWidgets.QLabel(parent=self.centralwidget)
-        self.LoginLabel.setGeometry(QtCore.QRect(260, 80, 131, 91))
+        self.LoginLabel.setGeometry(QtCore.QRect(250, 50, 131, 161))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.LoginLabel.setFont(font)
