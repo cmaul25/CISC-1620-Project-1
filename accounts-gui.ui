@@ -300,7 +300,7 @@
      <string>Withdrawl</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="wdEntry">
     <property name="geometry">
      <rect>
       <x>100</x>

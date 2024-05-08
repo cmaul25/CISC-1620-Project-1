@@ -13,7 +13,8 @@ class Logic(QMainWindow, Ui_MainWindow):
             if ''==self.FNEntry.text().strip() or ''==self.LNEntry.text().strip() or ''==self.PINEntry.text().strip():
                 raise ValueError
             #PIN must be numeric
-            int(self.PINEntry.text().strip())
+            if not self.PINEntry.text().strip().isalnum():
+                raise ValueError
             with open('database','r',newline='')as file:
                 database=csv.reader(file)
                 for account in database:
@@ -33,18 +34,28 @@ class Logic(QMainWindow, Ui_MainWindow):
             try:
                 exist=self.check_accounts()
                 if exist==True:
-                    self.LoginLabel.setText(f'Welcome {self.__current_account.get_balance[0]}, {self.__current_account.get_balance[1]}')
+                    names=self.__current_account.get_name()
+                    self.LoginLabel.setText(f'Welcome {names[0]}, {names[1]}')
                     self.__new_account=False
                 else:
                     if self.__new_account==True:
                         self.LoginLabel.setText('Enter Starting Balance into Desposit/WithDrawl Field then press enter again.')
+                        self.__new_account='Create'
+                    elif self.__new_account=='Create':
+                        self.create_account()
                     else:
                         self.__new_account=True
                         self.LoginLabel.setText('Please make sure your information is entered correctly. Press Enter again to make a new account.')
 
-            except:
+            except ValueError:
                 self.LoginLabel.setText('Please enter valid information into the fields.\n (PIN must be numeric)')
-
+        def create_account(self)->None:
+            '''
+            creates a new account
+            :return:
+            '''
+            self.__current_account=Account(fname=self.FNEntry.text(),lname=self.LNEntry.text(),pin=self.PINEntry.text(),history=[],balance=int(self.wdEntry.text()))
+            print('here')
         def __init__(self)->None:
             '''
 

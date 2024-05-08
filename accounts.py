@@ -27,7 +27,7 @@ class Account:
         return float(self.__account_balance)
 #e
     def get_name(self):
-        return self.__account_fname,self.__account_lname
+        return (self.__account_fname,self.__account_lname)
 
 #f
     def set_balance(self,value):
