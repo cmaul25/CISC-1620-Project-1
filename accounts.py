@@ -42,6 +42,8 @@ class Account:
 #g
     def set_name(self,value:tuple)->None:
         self.__account_name,self.__account_lname=value
+    def set_history(self,value:list)->None:
+        self.__account_history=value
 #h
     def __str__(self):
         return (f"Account name {self.get_name()[0]} {self.get_name()[1]}, Account balance = {self.get_balance():.2f}, "

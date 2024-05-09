@@ -14,7 +14,18 @@ class Logic(QMainWindow, Ui_MainWindow):
                 writer=csv.writer(file)
                 database = csv.reader(file)
                 names = self.__current_account.get_name()
-
+                if self.__new_account=='Created':
+                    file.read()
+                    try:
+                        hist_list = self.__current_account.get_history()
+                        history = hist_list.join(',')
+                    except:
+                        history = ''
+                        self.__current_account.set_history('')
+                    writer.writerow(
+                        [names[0], names[1], self.__current_account.get_pin(), self.__current_account.get_balance(),
+                         history])
+                else:
                     for account in database:
                         if account[0]==names[0] and account[1]==names[1]:
                             #checking for any history
@@ -22,24 +33,19 @@ class Logic(QMainWindow, Ui_MainWindow):
                                 hist_list = self.__current_account.get_history()
                                 history = hist_list.join(',')
                             except:
-                                history='None'
+                                history=''
+                                self.__current_account.set_history('')
                             writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),history])
                         else:
                             try:
                                 hist_list = self.__current_account.get_history()
                                 history = hist_list.join(',')
                             except:
-                                history = 'None'
+                                history = ''
+                                self.__current_account.set_history('')
                             writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),history])
 
-                    try:
-                        hist_list = self.__current_account.get_history()
-                        history = hist_list.join(',')
-                    except:
-                        history = 'None'
-                    writer.writerow(
-                        [names[0], names[1], self.__current_account.get_pin(), self.__current_account.get_balance(),
-                         history])
+
 
         def check_accounts(self)->bool:
             '''
@@ -51,6 +57,9 @@ class Logic(QMainWindow, Ui_MainWindow):
                 raise ValueError
             #PIN must be numeric
             if not self.PINEntry.text().strip().isalnum():
+                raise ValueError
+            # names cant have numbers
+            if not self.FNEntry.text().strip().isalpha() or not self.LNEntry.text().strip().isalpha():
                 raise ValueError
             with open('database','r',newline='')as file:
                 database=csv.reader(file)
@@ -79,8 +88,17 @@ class Logic(QMainWindow, Ui_MainWindow):
             return string
         def account_info_str(self)->str:
             names=self.__current_account.get_name()
-            return f'Name: {names[0]}{names[1]}\nBalance: ${self.__current_account.get_balance():.2f}'
+            return f'Name: {names[0].strip()} {names[1].strip()}\nBalance: ${self.__current_account.get_balance():.2f}'
 
+        def update_screen(self)->None:
+            '''
+            updates screen
+            :return:
+            '''
+            names = self.__current_account.get_name()
+            self.LoginLabel.setText(f'Welcome {names[0]}, {names[1]}')
+            self.HistDisplayLabel.setText(self.account_history_str())
+            self.AccDisplayLabel.setText(self.account_info_str())
         def login(self)->None:
             '''
             logs into the account if account is in database
@@ -90,13 +108,11 @@ class Logic(QMainWindow, Ui_MainWindow):
             try:
                 self.__exist=self.check_accounts()
                 if self.__exist==True or self.__new_account=='Created':
-                    names=self.__current_account.get_name()
-                    self.LoginLabel.setText(f'Welcome {names[0]}, {names[1]}')
-                    self.HistDisplayLabel.setText(self.account_history_str())
-                    self.AccDisplayLabel.setText(self.account_info_str())
+                    self.update_screen()
+                    self.__new_account=False
                 else:
                     if self.__new_account==True:
-                        self.LoginLabel.setText('Enter Starting Balance into Desposit/WithDrawl Field then press enter again.')
+                        self.LoginLabel.setText('Enter Starting Balance into Desposit/WithDraw Field then press enter again.')
                         self.__new_account='Create'
                     elif self.__new_account=='Create':
                         self.__new_account = 'Created'
@@ -104,21 +120,30 @@ class Logic(QMainWindow, Ui_MainWindow):
                     else:
                         self.__new_account=True
                         self.LoginLabel.setText('Please make sure your information is entered correctly. Press Enter again to make a new account.')
-
+            except ZeroDivisionError as e:
+                self.__new_account='Create'
+                self.LoginLabel.setText(
+                    'Please enter a number into Deposit/Withdraw to set balance')
+                print(e)
             except ValueError as e:
-                self.LoginLabel.setText('Please enter valid information into the fields.\n (PIN must be numeric)')
+                self.LoginLabel.setText('Please enter valid information into the fields.\n (PIN must be numeric and no numbers in names)')
                 print(e)
         def create_account(self)->None:
             '''
             creates a new account
             :return:
             '''
-            self.__current_account=Account(fname=self.FNEntry.text(),lname=self.LNEntry.text(),pin=self.PINEntry.text(),history=[],balance=int(self.wdEntry.text()))
-            names = self.__current_account.get_name()
-            self.LoginLabel.setText(f'Welcome {names[0]}, {names[1]}')
-            self.HistDisplayLabel.setText(self.account_history_str())
-            self.AccDisplayLabel.setText(self.account_info_str())
+            try:
+                if self.wdEntry.text().strip()=='':
+                    raise ZeroDivisionError
+                if float(self.wdEntry.text().strip())<0:
+                    raise ZeroDivisionError
+                self.__current_account=Account(fname=self.FNEntry.text().strip(),lname=self.LNEntry.text().strip(),pin=self.PINEntry.text().strip(),history=[],balance=float(self.wdEntry.text().strip()))
+            except ValueError:
+                raise ZeroDivisionError
             self.database_update()
+            self.update_screen()
+
         def __init__(self)->None:
             '''
 
