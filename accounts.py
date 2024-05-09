@@ -31,7 +31,7 @@ class Account:
 
     def get_pin(self):
         return self.__account_pin
-    def get_history(self):
+    def get_history(self)->list:
         return self.__account_history
 #f
     def set_balance(self,value):

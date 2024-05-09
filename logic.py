@@ -6,7 +6,7 @@ import csv
 class Logic(QMainWindow, Ui_MainWindow):
         def database_update(self)->None:
             '''
-            updates database
+            finds the account in the database and updates it
             :return:
             '''
             with open('database','r+',newline='') as file:
@@ -15,9 +15,20 @@ class Logic(QMainWindow, Ui_MainWindow):
                 for account in database:
                     names=self.__current_account.get_name()
                     if account[0]==names[0] and account[1]==names[1]:
-                        writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),self.__current_account.get_history()])
+                        #checking for any history
+                        try:
+                            hist_list = self.__current_account.get_history()
+                            history = hist_list.join(',')
+                        except:
+                            history='None'
+                        writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),history])
                     else:
-                        writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),self.__current_account.get_history()])
+                        try:
+                            hist_list = self.__current_account.get_history()
+                            history = hist_list.join(',')
+                        except:
+                            history = 'None'
+                        writer.writerow([names[0],names[1],self.__current_account.get_pin(),self.__current_account.get_balance(),history])
 
 
 
@@ -36,11 +47,26 @@ class Logic(QMainWindow, Ui_MainWindow):
                 database=csv.reader(file)
                 for account in database:
                     if account[0]==self.FNEntry.text().strip() and account[1]==self.LNEntry.text().strip() and account[2]==self.PINEntry.text().strip():
-                        self.__current_account=Account(fname=account[0],lname=account[1],pin=int(account[2]),balance=account[3],history=account[4:])
+                        self.__current_account=Account(fname=account[0],lname=account[1],pin=int(account[2]),balance=account[3],history=list(account[4:]))
                         print(self.__current_account)
+                        print(self.__current_account.get_history())
                         return True
             return False
 
+        def account_history_str(self)->str:
+            history=self.__current_account.get_history()
+            string='Most Recent:\n'
+            recent_5=0
+            for trans in range(1,len(history)+1):
+                if recent_5==5:
+                    break
+                try:
+                    recent_5+=1
+                    string+='\t'+history[-trans]+'\n'
+                except IndexError:
+                    break
+
+            return string
 
         def login(self)->None:
             '''
@@ -53,6 +79,7 @@ class Logic(QMainWindow, Ui_MainWindow):
                 if exist==True:
                     names=self.__current_account.get_name()
                     self.LoginLabel.setText(f'Welcome {names[0]}, {names[1]}')
+                    self.HistDisplayLabel.setText(self.account_history_str())
                     self.__new_account=False
                 else:
                     if self.__new_account==True:
