@@ -48,6 +48,7 @@ class Ui_MainWindow(object):
         self.EntryFrame.setObjectName("EntryFrame")
         self.PINEntry = QtWidgets.QLineEdit(parent=self.EntryFrame)
         self.PINEntry.setGeometry(QtCore.QRect(10, 70, 113, 20))
+        self.PINEntry.setEchoMode(QtWidgets.QLineEdit.EchoMode.Password)
         self.PINEntry.setObjectName("PINEntry")
         self.LNEntry = QtWidgets.QLineEdit(parent=self.EntryFrame)
         self.LNEntry.setGeometry(QtCore.QRect(10, 40, 113, 20))
