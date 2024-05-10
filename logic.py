@@ -4,7 +4,10 @@ from accounts import *
 import csv
 
 class Logic(QMainWindow, Ui_MainWindow):
-        def database_update(self)->None:
+    '''
+    Logic Class for Gui
+    '''
+    def database_update(self)->None:
             '''
             finds the account in the database and updates it
             :return:
@@ -44,7 +47,7 @@ class Logic(QMainWindow, Ui_MainWindow):
                         writer.writerow([names[0], names[1], self.__current_account.get_pin(),
                                          f'{self.__current_account.get_balance():.2f}'])
 
-        def check_accounts(self)->bool:
+    def check_accounts(self)->bool:
             '''
             returns True if account entered is in the database
             :return:
@@ -75,29 +78,37 @@ class Logic(QMainWindow, Ui_MainWindow):
                         return False
             return False
 
-        def account_history_str(self)->str:
-            history=self.__current_account.get_history()
+    def account_history_str(self)->str:
+        '''
+        creates str for account history
+        :return:
+        '''
+        history=self.__current_account.get_history()
 
-            string='Most Recent:\n'
-            recent_5=0
-            try:
-                history = [float(i) for i in history]
-                for trans in range(1,len(history)+1):
-                    if recent_5==5:
-                        break
-                    try:
-                        recent_5+=1
-                        string+='\t'+str(history[-trans])+'\n'
-                    except IndexError:
-                        break
-            except TypeError:
-                string+=''
-            return string
-        def account_info_str(self)->str:
-            names=self.__current_account.get_name()
-            return f'Name: {names[0].strip()} {names[1].strip()}\nBalance: ${self.__current_account.get_balance():.2f}'
+        string='Most Recent:\n'
+        recent_5=0
+        try:
+            history = [float(i) for i in history]
+            for trans in range(1,len(history)+1):
+                if recent_5==5:
+                    break
+                try:
+                    recent_5+=1
+                    string+='\t'+str(history[-trans])+'\n'
+                except IndexError:
+                    break
+        except TypeError:
+            string+=''
+        return string
+    def account_info_str(self)->str:
+        '''
+        creates string for account info
+        :return:
+        '''
+        names=self.__current_account.get_name()
+        return f'Name: {names[0].strip()} {names[1].strip()}\nBalance: ${self.__current_account.get_balance():.2f}'
 
-        def update_screen(self)->None:
+    def update_screen(self)->None:
             '''
             updates screen
             :return:
@@ -106,7 +117,7 @@ class Logic(QMainWindow, Ui_MainWindow):
             self.LoginLabel.setText(f'Welcome {names[0]}, {names[1]}')
             self.HistDisplayLabel.setText(self.account_history_str())
             self.AccDisplayLabel.setText(self.account_info_str())
-        def login(self)->None:
+    def login(self)->None:
             '''
             logs into the account if account is in database
             :return:
@@ -135,7 +146,7 @@ class Logic(QMainWindow, Ui_MainWindow):
             except ValueError as e:
                 self.LoginLabel.setText('Please enter valid information into the fields.\n (PIN must be numeric and no numbers in names)')
                 print(e)
-        def create_account(self)->None:
+    def create_account(self)->None:
             '''
             creates a new account
             :return:
@@ -151,7 +162,7 @@ class Logic(QMainWindow, Ui_MainWindow):
             self.database_update()
             self.update_screen()
 
-        def withdraw(self)->None:
+    def withdraw(self)->None:
             '''
             withdraws money from account balance
             :return:
@@ -168,7 +179,7 @@ class Logic(QMainWindow, Ui_MainWindow):
                 except ValueError:
                     self.LoginLabel.setText('Please enter a none negative number to withdraw')
 
-        def deposit(self)->None:
+    def deposit(self)->None:
             '''
             puts money into the balance
             :return:
@@ -184,7 +195,7 @@ class Logic(QMainWindow, Ui_MainWindow):
                         self.LoginLabel.setText('Please enter a number that is not negative')
                 except ValueError:
                     self.LoginLabel.setText('Please enter a number')
-        def update_history(self,val:float)->None:
+    def update_history(self,val:float)->None:
             '''
             updates history
             :return:
@@ -197,9 +208,10 @@ class Logic(QMainWindow, Ui_MainWindow):
 
             self.update_screen()
             self.database_update()
-        def __init__(self)->None:
+    def __init__(self)->None:
             '''
-
+            creates instance variables to help note if and account is being made
+            also has button functionality
             '''
             super().__init__()
             self.setupUi(self)
