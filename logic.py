@@ -71,7 +71,6 @@ class Logic(QMainWindow, Ui_MainWindow):
                             last=hist_list.pop(-1)
                             if last!='':
                                 hist_list.append(last)
-                            print(hist_list)
                             self.__current_account.set_history(hist_list)
                             return True
                     except IndexError:
